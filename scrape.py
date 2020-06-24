@@ -22,7 +22,7 @@ class PsaAuctionPrices:
         sess.mount("https://", requests.adapters.HTTPAdapter(max_retries=5))
         r = sess.get(self.card_url)
         r.raise_for_status()
-        soup = BeautifulSoup(r.text, "html5lib")
+        soup = BeautifulSoup(r.text, "html.parser")
         time.sleep(5)
         
         # Get image url links

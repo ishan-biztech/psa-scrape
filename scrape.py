@@ -36,10 +36,13 @@ class PsaAuctionPrices:
         
         # Get PSA grades and qualifiers
         grades, quals = self.get_grades(soup)
+
+        # Get lot number
+        lot_numbers = self.get_lot_numbers(soup)
         
         # Get lot url links
         lots = self.get_lot_urls(soup)
-        
+
         # Get auction houses
         a_houses = self.get_auction_houses(soup)
         
@@ -63,6 +66,7 @@ class PsaAuctionPrices:
             "sale_type": sale_types, 
             "psa_certification": certs, 
             "img_url": images, 
+            "lot_numbers": lot_numbers,
             "lot_url": lots
         })
         
@@ -101,6 +105,18 @@ class PsaAuctionPrices:
             else:
                 quals.append(math.nan)
         return grades, quals
+
+    def get_lot_numbers(self, soup):
+        lot_data = soup.find_all("div", {'class': 'item item-lot'})
+        base_url = "https://www.psacard.com"
+        lot_numbers = []
+        for n in lot_data:
+            html = str(n)
+            if "href" not in html:
+                lot_numbers.append(math.nan)
+                continue
+            lot_numbers.append(html.split(html.split('href="')[1].split('"')[0] + '">')[1].split("</a>")[0].strip())
+        return lot_numbers
     
     def get_lot_urls(self, soup):
         lot_data = soup.find_all("div", {'class': 'item item-lot'})
